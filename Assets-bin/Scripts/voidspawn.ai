@@ -1,0 +1,1296 @@
+//==================================================================================================
+//  $Id: elf.ai,v 1.18 2003/04/23 19:26:00 bfitch Exp $
+//==================================================================================================
+globals
+    //--------------------------------------------------------------------
+    //  VOIDSPAWN
+    //--------------------------------------------------------------------
+
+    // void heroes
+    constant integer VOIDGOD 	 	= 'O01U'
+    constant integer VOIDGOD_M    	= 'O01V'
+    constant integer MAW 	= 'U01M'
+    constant integer MAW_ROOTED 	= 'U01K'
+    constant integer FLAMEWEAVER         	= 'U01H'
+    constant integer OVERLORD         	= 'U01L'
+
+    // void hero abilities
+    constant integer TENTACLE_PRISON             = 'A0L3'
+    constant integer EYE_TENTACLE               = 'A0L2'
+    constant integer TENTACLE_AURA       = 'A0L9'
+    constant integer UNLEASH_AETHER       = 'A0MO'
+
+    constant integer VG_ETHEREAL      = 'A0NK'
+    constant integer INVOKE_SHADOWS      = 'A0NJ'
+    constant integer NETHER_STRIKE          = 'A0NM'
+    constant integer BLACK_HOLE       = 'A0NW'
+
+    constant integer NETHERFIELD           = 'A0H0'
+    constant integer AETHER_TRAIL    = 'A0GK'
+    constant integer AETHER_SHIFT      = 'A0GS'
+    constant integer FIERY_IMPRISONMENT    = 'A0GZ'
+
+    constant integer VOIDIC_POSSESSION             = 'A0MR'
+    constant integer RIFT_BURST       = 'A0MX'
+    constant integer OBLITERATION     = 'A0MY'
+    constant integer DDND        = 'A0N0'
+
+    // void units 
+    constant integer EXPANSION_FORERUNNER            =  'e01K'
+    constant integer NETHERCHILD            =  'n03A'
+    constant integer NETHERLING            =  'n03J'
+    constant integer NETHERCHILD2            =  NETHERLING
+    
+    constant integer VOIDWALKER             = 'n030'
+    constant integer IMPLING               =  'o01L'
+    constant integer NETHERWALKER          = 'n031'
+    constant integer SHADOW_PHOENIX            = 'h02K'
+    constant integer ASPECT_OF_SUFFERING            = 'o01S'
+    constant integer PRISONWATCHER             = 'n03I'
+    constant integer PRISONHOUND             = 'o01T'
+    constant integer CONVERTED_PRISONER            = 'n03K'
+    constant integer AETHERSTORM_WARDEN            = 'h02W'
+    constant integer EYE_OF_THE_AETHER            =  'n03N'
+    constant integer ABYSS_WARP_DRAKE            =  'n03H'
+
+    // human buildings
+    constant integer AETHERSTORM_TOWER             = 'h02V'
+    constant integer ABYSS_RIFT             = 'n02W'
+    constant integer RIFT             = ABYSS_RIFT
+    constant integer AETHERGATE           = 'h02H'
+    constant integer VOID_ALTAR         = 'u00W'
+    constant integer SHROOM_TOWER       = 'n02X'
+    constant integer MONSTROUS_GROWTH       = SHROOM_TOWER
+    constant integer PRISON_OF_THE_TORTURED             = 'h02Q'
+    constant integer PRISONS             = PRISON_OF_THE_TORTURED
+    constant integer SHADOW_BUNKER         =  'h02E'
+    constant integer TRANSLO_PORTAL        = 'n02Z'
+    constant integer TRANSLOCATIONAL_WAY_PORTAL        = TRANSLO_PORTAL
+    constant integer VAULT_OF_THE_AETHER              = 'h02G'
+    constant integer AETHER_VAULT              = VAULT_OF_THE_AETHER
+    constant integer VOIDHALL        = 'h02I'
+    constant integer VOID_HALL        = VOIDHALL
+    constant integer VOID_CRAFTED_HALL        =  VOIDHALL
+    constant integer VORTEX_OF_SACRIFICE               = 'u01S'
+    constant integer VOID_MINE               = 'e01L'
+    constant integer BASTION_OF_LAMENT               = 'h02F'
+    constant integer SHRINE               = 'h012'
+    constant integer NETHER_BURROWER               = 'e01R'
+
+    // void upgrades
+    constant integer UPG_ABYSS_SHOCK          = 'R02T'
+    constant integer UPG_ABYSS_DRAKE         = 'R02V'
+    constant integer UPG_VOIDBACKPACK      = 'R02Z'
+    constant integer UPG_ASPECT_SUFFER          = 'R02U'
+    constant integer UPG_PHOENIX_EGG        = 'R01V'
+    constant integer UPG_DEMONIC_CLAWS          = 'R02O'
+    constant integer UPG_DODGE         = 'R03Z'
+    constant integer UPG_DOG_STRENGTH       = 'R031'
+    constant integer UPG_STORM_AURA        = 'R02Y'
+    constant integer UPG_SHADOW_WREATH        = 'R01W'
+    constant integer UPG_SKITTERING_RIFTS        = 'R02W'
+    constant integer UPG_SPELL_SHELL      = 'R01T'
+    constant integer UPG_VOIDWALKER           = 'R01U'
+    constant integer UPG_ORANGE_ARMOR       = 'R03R'
+    constant integer UPG_UNITY        = 'R030'
+    constant integer UPG_PURPLE_ARMOR          = 'R01Z'
+    constant integer UPG_PRISONER_BURST        = 'R033'
+    constant integer UPG_PURPLE_ATTACK     = 'R01X'
+    constant integer UPG_VOIDIC_VOLLEY          = 'R02R'
+    constant integer UPG_ORANGE_ATTACK           = 'R01Y'
+    constant integer UPG_AETHERBLAST           = 'R02S'
+    constant integer UPG_AETHER_WARDEN          = 'R03I'
+    
+    constant integer X_UPKEEP_TIER1       = 90
+    constant integer X_UPKEEP_TIER2       = 150
+	
+	//END CONSTANTS
+    boolean basic_opening       = true
+    boolean void_opening      = true
+
+    integer wave                = 0
+
+    boolean b_acid_breath       = false
+    boolean b_hero1_done        = false
+    boolean b_hero2_done        = false
+
+    integer c_altar_done        = 0
+    integer c_void            = 0
+    integer c_void_done       = 0
+    integer c_watcher          = 0
+    integer c_watcher_done     = 0
+    integer c_hound              = 0
+    integer c_hound_done         = 0
+    integer c_phoenix          = 0
+    integer c_phoenix_done     = 0 
+    integer c_prisoner       = 0
+    integer c_prisoner_done       = 0
+    integer c_imp             = 0
+    integer c_imp_done        = 0
+    integer c_food_made         = 0
+    integer c_food_used         = 0
+    integer c_gold              = 0
+    integer c_gold_owned        = 0
+    integer c_hero1_done        = 0
+    integer c_hero2_done        = 0
+    integer c_hero3_done        = 0
+    integer c_hall_done    = 0
+    integer c_nether          = 0
+    integer c_nether_done     = 0
+    integer c_prison_done         = 0
+    integer c_mines             = 0
+    integer c_mines_done        = 0
+    integer c_vortex         = 0
+    integer c_vortex_done    = 0
+    integer c_drake         = 0
+    integer c_drake_done    = 0
+    integer c_portal_done        = 0
+    integer c_suffer             = 0
+    integer c_suffer_done        = 0
+    integer c_warden             = 0
+    integer c_warden_done        = 0
+    integer c_eye             = 0
+    integer c_eye_done        = 0
+    integer c_bastion_done    = 0
+    integer c_unity_done   = 0
+    integer c_shrine         = 0
+    integer c_shrine_done    = 0
+    integer c_gate_done          = 0
+    integer c_astower_done         = 0
+    integer c_vault_done      = 0
+    integer c_rift_done      = 0
+    integer c_zeps              = 0
+    
+    
+    constant player debug_player = Player(0)
+    hashtable voidUnitHash = InitHashtable()
+endglobals
+
+
+//==========Thanks to AMAI for these!!==========
+function SelectNumberOfId takes group g, integer n, integer id returns group
+     local integer c = 0
+     local unit u = null
+     local group rg = CreateGroup()
+     loop
+       set u = FirstOfGroup(g)
+       exitwhen u == null
+       exitwhen c == n
+       if GetUnitTypeId(u) == id then
+          set c = c + 1
+          call GroupAddUnit(rg, u ) 
+       endif
+       call GroupRemoveUnit(g, u )
+     endloop
+     call DestroyGroup(g)
+     return rg
+endfunction
+
+function SelectById takes group g, integer id, boolean is_id returns group
+     local unit u = null
+     local group rg = CreateGroup()
+     loop
+       set u = FirstOfGroup(g)
+       exitwhen u == null
+       if (GetUnitTypeId(u) == id) == is_id then
+          call GroupAddUnit(rg, u ) 
+       endif
+       call GroupRemoveUnit(g, u )
+     endloop
+     call DestroyGroup(g)
+     return rg
+endfunction
+
+function SelectByIdOr takes group g, integer id1, integer id2, boolean is_id returns group
+     local unit u = null
+     local group rg = CreateGroup()
+     loop
+       set u = FirstOfGroup(g)
+       exitwhen u == null
+       if (GetUnitTypeId(u) == id1 or GetUnitTypeId(u) == id2) == is_id then
+          call GroupAddUnit(rg, u ) 
+       endif
+       call GroupRemoveUnit(g, u )
+     endloop
+     call DestroyGroup(g)
+     return rg
+endfunction
+
+function SelectByPlayer takes group g, player p, boolean is_owner returns group
+     local unit u = null
+     local group rg = CreateGroup()
+     loop
+       set u = FirstOfGroup(g)
+       exitwhen u == null
+       if (GetOwningPlayer(u) == p) == is_owner then
+          call GroupAddUnit(rg, u )
+       endif
+       call GroupRemoveUnit(g, u )
+     endloop
+     call DestroyGroup(g)
+     return rg
+endfunction
+
+function SelectByAlive takes group g, boolean is_alive returns group
+     local unit u = null
+     local group rg = CreateGroup()
+     loop
+       set u = FirstOfGroup(g)
+       exitwhen u == null
+       if UnitAlive(u) == is_alive then
+	   //if not IsUnitType(u, UNIT_TYPE_DEAD) == is_alive then
+          call GroupAddUnit(rg, u ) 
+       endif
+       call GroupRemoveUnit(g, u )
+     endloop
+     call DestroyGroup(g)
+     return rg
+endfunction
+
+function GetOneOfId takes player p, integer id returns unit
+   local unit u = null
+   local group g = CreateGroup()     
+   call GroupEnumUnitsOfPlayer(g, p, null)
+   set g = SelectByAlive(g, true)
+   loop
+     set u = FirstOfGroup(g)
+     exitwhen u == null
+     if GetUnitTypeId(u) == id then
+       call DestroyGroup(g)
+       set g = null
+       return u
+     endif
+     call GroupRemoveUnit(g, u )
+   endloop
+   call DestroyGroup(g)
+   set g = null
+   return null
+endfunction
+
+function GetOneOfIdNearLoc takes player p, integer id, location l, real dist returns unit
+   local unit u = null
+   local group g = CreateGroup()     
+   call GroupEnumUnitsInRangeOfLoc(g, l, dist, null)
+   set g = SelectByPlayer(g, p, true)
+   set g = SelectByAlive(g, true)
+   loop
+     set u = FirstOfGroup(g)
+     exitwhen u == null
+     if GetUnitTypeId(u) == id then
+       call DestroyGroup(g)
+       set g = null
+       return u
+     endif
+     call GroupRemoveUnit(g, u )
+   endloop
+   call DestroyGroup(g)
+   set g = null
+   return null
+endfunction
+//==========End Section: Thanks to AMAI for these!!==========
+
+//***************************************************************************
+//*
+//*  Utility Functions
+//*
+//***************************************************************************
+
+function SetProduceVoidUnit takes integer afford_qty, integer unitid returns boolean
+    local group g
+    local boolean b
+    local unit u
+    if afford_qty == 1 then
+        return IssueImmediateOrderById(GetOneOfId(ai_player,NETHERCHILD),unitid)
+    endif
+    set g = CreateGroup()
+    call GroupEnumUnitsOfPlayer(g,ai_player,null)
+    set g = SelectNumberOfId(g,afford_qty,unitid)
+    set b = true
+    loop
+        set u = FirstOfGroup(g)
+        exitwhen u == null
+        set b = true and IssueImmediateOrderById(u,unitid)
+        call GroupRemoveUnit(g,u)
+    endloop
+    
+    call DestroyGroup(g)
+    set u = null
+    set g = null
+    return b
+endfunction
+
+//============================================================================
+function StartUnitVoid takes integer ask_qty, integer unitid, integer town returns boolean
+    local integer have_qty
+    local integer need_qty
+    local integer afford_gold
+    local integer afford_wood
+    local integer afford_qty
+    local integer gold_cost
+    local integer wood_cost
+
+    //------------------------------------------------------------------------
+    // if we have all we're asking for then make nothing
+    //
+    if town == -1 then
+        set have_qty = TownCount(unitid)
+    else
+        set have_qty = TownCountTown(unitid,town)
+    endif
+
+    if have_qty >= ask_qty then
+        return true
+    endif
+    set need_qty = ask_qty - have_qty
+
+    //------------------------------------------------------------------------
+    // limit the qty we're requesting to the amount of resources available
+    //
+    set gold_cost = GetUnitGoldCost(unitid)
+    set wood_cost = GetUnitWoodCost(unitid)
+
+    if gold_cost == 0 then
+        set afford_gold = need_qty
+    else
+        set afford_gold = total_gold / gold_cost
+    endif
+    if afford_gold < need_qty then
+        set afford_qty = afford_gold
+    else
+        set afford_qty = need_qty
+    endif
+
+    if wood_cost == 0 then
+        set afford_wood = need_qty
+    else
+        set afford_wood = total_wood / wood_cost
+    endif
+    if afford_wood < afford_qty then
+        set afford_qty = afford_wood
+    endif
+
+    // if we're waiting on gold/wood; pause build orders
+    if afford_qty < 1 then
+        return false
+    endif
+
+    //------------------------------------------------------------------------
+    // whether we make right now what we're requesting or not, assume we will
+    // and deduct the cost of the units from our fake gold total right away
+    //
+    set total_gold = total_gold - gold_cost * need_qty
+    set total_wood = total_wood - wood_cost * need_qty
+
+    if total_gold < 0 then
+        set total_gold = 0
+    endif
+    if total_wood < 0 then
+        set total_wood = 0
+    endif
+
+    //------------------------------------------------------------------------
+    // give the AI a chance to make the units (it may not be able to right now
+    // but that doesn't stop us from trying other units after this as long
+    // as we have enough money to make this AND the needed, unbuilt ones)
+    //
+    if LoadBoolean(voidUnitHash,unitid,0) then
+        return SetProduceVoidUnit(afford_qty,unitid)
+    endif
+    return SetProduce(afford_qty,unitid,town)
+endfunction
+
+//============================================================================
+function OneBuildLoopVoid takes nothing returns nothing
+    local integer index = 0
+    local integer qty
+    local integer id
+    local integer tp
+
+    set total_gold = GetGold() - gold_buffer
+    set total_wood = GetWood()
+
+    loop
+        exitwhen index == build_length
+
+        set qty = build_qty [index]
+        set id  = build_item[index]
+        set tp  = build_type[index]
+
+        //--------------------------------------------------------------------
+        if tp == BUILD_UNIT then
+            if not StartUnitVoid(qty,id,build_town[index]) then
+                return
+            endif
+
+        //--------------------------------------------------------------------
+        elseif tp == BUILD_UPGRADE then
+            call StartUpgrade(qty,id)
+
+        //--------------------------------------------------------------------
+        else // tp == BUILD_EXPAND
+            if not StartExpansion(qty,id) then
+                return
+            endif
+        endif
+
+        set index = index + 1
+    endloop
+endfunction
+
+//============================================================================
+function BuildLoopVoid takes nothing returns nothing
+    call OneBuildLoopVoid()
+    call StaggerSleep(1,2)
+    loop
+        call OneBuildLoopVoid()
+        call Sleep(2)
+    endloop
+endfunction
+
+function Tracer takes string str returns nothing
+    call DisplayTextToPlayer(debug_player,0,0,str)
+endfunction
+
+//--------------------------------------------------------------------------------------------------
+//  set_skills
+//--------------------------------------------------------------------------------------------------
+function set_skills takes nothing returns nothing
+
+    set skill[ 1] = EYE_TENTACLE
+    set skill[ 2] = TENTACLE_AURA
+    set skill[ 3] = EYE_TENTACLE
+    set skill[ 4] = TENTACLE_AURA
+    set skill[ 5] = TENTACLE_PRISON
+    set skill[ 6] = UNLEASH_AETHER
+    set skill[ 7] = EYE_TENTACLE
+    set skill[ 8] = TENTACLE_AURA
+    set skill[ 9] = TENTACLE_PRISON
+    set skill[10] = TENTACLE_PRISON
+
+    call SetSkillArray(1,MAW)
+    call SetSkillArray(2,MAW)
+    call SetSkillArray(3,MAW)
+
+    set skill[ 1] = INVOKE_SHADOWS
+    set skill[ 2] = NETHER_STRIKE
+    set skill[ 3] = VG_ETHEREAL
+    set skill[ 4] = INVOKE_SHADOWS
+    set skill[ 5] = NETHER_STRIKE
+    set skill[ 6] = BLACK_HOLE
+    set skill[ 7] = INVOKE_SHADOWS
+    set skill[ 8] = NETHER_STRIKE
+    set skill[ 9] = VG_ETHEREAL
+    set skill[10] = VG_ETHEREAL
+
+    call SetSkillArray(1,VOIDGOD)
+
+    set skill[ 1] = NETHER_STRIKE
+    set skill[ 2] = INVOKE_SHADOWS
+    set skill[ 3] = NETHER_STRIKE
+    set skill[ 4] = INVOKE_SHADOWS
+    set skill[ 5] = VG_ETHEREAL
+    set skill[ 6] = BLACK_HOLE
+    set skill[ 7] = NETHER_STRIKE
+    set skill[ 8] = INVOKE_SHADOWS
+    set skill[ 9] = VG_ETHEREAL
+    set skill[10] = VG_ETHEREAL
+
+    call SetSkillArray(2,VOIDGOD)
+    call SetSkillArray(3,VOIDGOD)
+
+    set skill[ 1] = AETHER_SHIFT
+    set skill[ 2] = FIERY_IMPRISONMENT
+    set skill[ 3] = AETHER_TRAIL
+    set skill[ 4] = FIERY_IMPRISONMENT
+    set skill[ 5] = AETHER_SHIFT
+    set skill[ 6] = NETHERFIELD
+    set skill[ 7] = AETHER_SHIFT
+    set skill[ 8] = AETHER_TRAIL
+    set skill[ 9] = FIERY_IMPRISONMENT
+    set skill[10] = AETHER_SHIFT
+
+    call SetSkillArray(1,FLAMEWEAVER)
+
+    set skill[ 1] = FIERY_IMPRISONMENT
+    set skill[ 2] = AETHER_SHIFT
+    set skill[ 3] = FIERY_IMPRISONMENT
+    set skill[ 4] = AETHER_SHIFT
+    set skill[ 5] = FIERY_IMPRISONMENT
+    set skill[ 6] = NETHERFIELD
+    set skill[ 7] = AETHER_SHIFT
+    set skill[ 8] = AETHER_TRAIL
+    set skill[ 9] = AETHER_TRAIL
+    set skill[10] = AETHER_TRAIL
+
+    call SetSkillArray(2,FLAMEWEAVER)
+    call SetSkillArray(3,FLAMEWEAVER)
+
+    set skill[ 1] = OBLITERATION
+    set skill[ 2] = RIFT_BURST
+    set skill[ 3] = VOIDIC_POSSESSION
+    set skill[ 4] = RIFT_BURST
+    set skill[ 5] = VOIDIC_POSSESSION
+    set skill[ 6] = DDND
+    set skill[ 7] = RIFT_BURST
+    set skill[ 8] = VOIDIC_POSSESSION
+    set skill[ 9] = OBLITERATION
+    set skill[10] = OBLITERATION
+
+    call SetSkillArray(1,OVERLORD) 
+
+    set skill[ 1] = VOIDIC_POSSESSION
+    set skill[ 2] = RIFT_BURST
+    set skill[ 3] = VOIDIC_POSSESSION
+    set skill[ 4] = RIFT_BURST
+    set skill[ 5] = VOIDIC_POSSESSION
+    set skill[ 6] = DDND
+    set skill[ 7] = RIFT_BURST
+    set skill[ 8] = OBLITERATION
+    set skill[ 9] = OBLITERATION
+    set skill[10] = OBLITERATION
+    
+    call SetSkillArray(2,OVERLORD)
+    call SetSkillArray(3,OVERLORD)
+endfunction
+
+//--------------------------------------------------------------------------------------------------
+//  setup_force
+//--------------------------------------------------------------------------------------------------
+function setup_force takes nothing returns nothing
+    call AwaitMeleeHeroes()
+    call InitMeleeGroup()
+
+    call SetMeleeGroup( hero_id         )
+    call SetMeleeGroup( hero_id2        )
+    call SetMeleeGroup( hero_id3        )
+    call SetMeleeGroup( VOIDWALKER          )
+    call SetMeleeGroup( IMPLING        )
+    call SetMeleeGroup( NETHERWALKER     )
+    call SetMeleeGroup( ASPECT_OF_SUFFERING      )
+    call SetMeleeGroup( PRISONWATCHER           )
+    call SetMeleeGroup( EYE_OF_THE_AETHER        )
+    call SetMeleeGroup( AETHERSTORM_WARDEN  )
+    call SetMeleeGroup( PRISONHOUND  )
+    call SetMeleeGroup( SHADOW_PHOENIX  )
+    call SetMeleeGroup( ABYSS_WARP_DRAKE  )
+    call SetMeleeGroup( CONVERTED_PRISONER   )
+
+    call SetInitialWave(10)
+endfunction
+
+//--------------------------------------------------------------------------------------------------
+//  force_level
+//--------------------------------------------------------------------------------------------------
+function force_level takes nothing returns integer
+    local integer level = 4
+    set level = level +      c_prisoner_done + c_warden_done
+    set level = level + 3 *  c_void_done / 4
+    set level = level + 2 *  (c_suffer_done )
+    set level = level + 3 *  (c_imp_done + c_nether_done)
+    set level = level + 4 * (c_drake_done)
+    set level = level + 5 * (c_hero3_done + c_phoenix_done + c_hound_done) 
+    set level = level + 6 * (c_hero2_done)
+    return level
+endfunction
+
+//--------------------------------------------------------------------------------------------------
+//  attack_sequence
+//--------------------------------------------------------------------------------------------------
+function attack_sequence takes nothing returns nothing
+    local boolean needs_exp
+    local boolean has_siege
+    local boolean air_units
+    local integer level
+
+    loop
+        exitwhen c_hero1_done > 0 and c_void_done >= 2
+        call Sleep(2)
+    endloop
+
+    if MeleeDifficulty() == MELEE_NEWBIE then
+        call Sleep(240)
+    endif
+
+    call StaggerSleep(0,2)
+    loop
+        loop
+            exitwhen not CaptainRetreating()
+            call Sleep(2)
+        endloop
+
+        set wave = wave + 1
+        if wave == 2 then
+            loop
+                exitwhen c_void_done >= 4
+                call Sleep(2)
+            endloop
+        endif
+
+        call setup_force()
+
+        set level = force_level()
+        set max_creeps = level * 4 / 5
+        set min_creeps = max_creeps - 10
+        if min_creeps < 0 then
+            set min_creeps = 0
+        endif
+
+        set needs_exp        = take_exp and (level >= 9 or c_gold_owned < 2000)
+        set has_siege        = level >= 40 or c_watcher_done > 0
+        set air_units        = c_phoenix_done > 0 or c_drake_done > 0
+        set allow_air_creeps = air_units or c_void_done > 3
+
+        call SingleMeleeAttack(needs_exp,has_siege,false,air_units)
+
+        if MeleeDifficulty() == MELEE_NEWBIE then
+            call Sleep(60)
+        endif
+    endloop
+endfunction
+
+//--------------------------------------------------------------------------------------------------
+//  init_vars
+//--------------------------------------------------------------------------------------------------
+function init_vars takes nothing returns nothing
+
+    //set b_acid_breath       = GetUpgradeLevel(UPG_CHIM_ACID) >= 1
+    set b_hero1_done        = GetUnitCountDone(hero_id) > 0
+    set b_hero2_done        = GetUnitCountDone(hero_id2) > 0
+
+    set c_altar_done        = GetUnitCountDone(VOID_ALTAR)
+    set c_void            = GetUnitCount(VOIDWALKER)
+    set c_void_done       = GetUnitCountDone(VOIDWALKER)
+    set c_watcher          = GetUnitCount(PRISONWATCHER)
+    set c_watcher_done     = GetUnitCountDone(PRISONWATCHER)
+    set c_hound              = GetUnitCount(PRISONHOUND)
+    set c_hound_done         = GetUnitCountDone(PRISONHOUND)
+    set c_phoenix          = GetUnitCount(SHADOW_PHOENIX)
+    set c_phoenix_done     = GetUnitCountDone(SHADOW_PHOENIX)
+    set c_prisoner       = GetUnitCount(CONVERTED_PRISONER)
+    set c_prisoner_done       = GetUnitCountDone(CONVERTED_PRISONER)
+    set c_imp             = GetUnitCount(IMPLING)
+    set c_imp_done        = GetUnitCountDone(IMPLING)
+    set c_food_made         = FoodCap()
+    set c_food_used         = FoodUsed()
+    set c_gold              = GetGold()
+    set c_gold_owned        = GetGoldOwned()
+    set c_hero1_done        = GetUnitCountDone(hero_id)
+    set c_hero2_done        = GetUnitCountDone(hero_id2)
+    set c_hero3_done        = GetUnitCountDone(hero_id3)
+    set c_hall_done    = GetUnitCountDone(VOID_HALL)
+    set c_nether          = GetUnitCount(NETHERWALKER)
+    set c_nether_done     = GetUnitCountDone(NETHERWALKER)
+    set c_prison_done         = GetUnitCountDone(PRISONS)
+    set c_mines             = GetMinesOwned()
+    set c_mines_done        = GetUnitCountDone(VOID_MINE)  
+    set c_vortex         = GetUnitCount(VORTEX_OF_SACRIFICE)
+    set c_vortex_done    = GetUnitCountDone(VORTEX_OF_SACRIFICE)
+    set c_drake         = GetUnitCount(ABYSS_WARP_DRAKE)
+    set c_drake_done    = GetUnitCountDone(ABYSS_WARP_DRAKE)
+    set c_portal_done        = GetUnitCountDone(TRANSLO_PORTAL)
+    set c_suffer             = GetUnitCount(ASPECT_OF_SUFFERING)
+    set c_suffer_done        = GetUnitCountDone(ASPECT_OF_SUFFERING)
+    set c_warden             = GetUnitCount(AETHERSTORM_WARDEN)
+    set c_warden_done        = GetUnitCountDone(AETHERSTORM_WARDEN)
+    set c_eye             = GetUnitCount(EYE_OF_THE_AETHER)
+    set c_eye_done        = GetUnitCountDone(EYE_OF_THE_AETHER)
+    set c_bastion_done    = TownCountDone(BASTION_OF_LAMENT)
+    set c_unity_done   = GetUpgradeLevel(UPG_UNITY)
+    set c_shrine         = TownCount(SHRINE)
+    set c_shrine_done    = TownCountDone(SHRINE)
+    set c_gate_done          = GetUnitCountDone(AETHERGATE)
+    set c_astower_done         = GetUnitCountDone(AETHERSTORM_TOWER)
+    set c_vault_done         = GetUnitCountDone(VAULT_OF_THE_AETHER)
+    set c_rift_done         = GetUnitCountDone(RIFT)
+    set c_zeps              = GetUnitCount(ZEPPELIN)
+
+    if basic_opening then
+
+        if b_hero2_done or (MeleeDifficulty() == MELEE_NEWBIE and c_rift_done >= 4) then
+            set basic_opening = false
+        endif
+
+        if void_opening and c_void_done >= 6 then
+            set void_opening = false
+        endif
+    endif
+endfunction
+
+//--------------------------------------------------------------------------------------------------
+//  set_vars
+//--------------------------------------------------------------------------------------------------
+function set_vars takes nothing returns nothing
+    loop
+        call init_vars()
+        call Sleep(1)
+    endloop
+endfunction
+
+//--------------------------------------------------------------------------------------------------
+//  basics
+//--------------------------------------------------------------------------------------------------
+function basics takes integer food returns nothing
+    local integer voids
+    local integer imps
+
+    if void_opening then//or c_hall_done < 1 then
+
+        set voids = food / 2
+        if voids > 6 then
+            set voids = 6
+        endif
+
+        call SetBuildUnit( voids, VOIDWALKER )
+        return
+    endif
+
+    set imps = (food - 2 * c_void) / 3
+    if imps > 3 then
+        set imps = 3
+    endif
+
+    call SetBuildUnit( imps, IMPLING )
+
+    if food >= 15 then
+        call SetBuildUnit( 3, VOIDWALKER )
+    endif
+endfunction
+
+//--------------------------------------------------------------------------------------------------
+//  do_upgrades
+//--------------------------------------------------------------------------------------------------
+function do_upgrades takes nothing returns nothing
+
+    if c_bastion_done >= 1 and c_gate_done >= 1 then
+        if c_nether >= 1 then
+            call SetBuildUpgr( 1, UPG_DEMONIC_CLAWS )
+        endif
+        if c_hall_done >= 1 then
+            if c_void >= 1 then
+                call SetBuildUpgr( 1, UPG_SPELL_SHELL )
+            endif
+            if c_imp >= 1 then
+                call SetBuildUpgr( 1, UPG_DODGE     )
+            endif
+        endif
+    endif
+
+    if c_hound >= 1 and c_prison_done >= 1 and c_unity_done >= 1 then
+        call SetBuildUpgr( 1, UPG_DOG_STRENGTH     )
+    endif
+
+    if c_hall_done >= 1 then
+
+        if c_void + c_watcher + c_phoenix + c_prisoner >= 3 then
+
+            call SetBuildUpgr( 1, UPG_PURPLE_ATTACK      )
+            call SetBuildUpgr( 1, UPG_PURPLE_ARMOR    )
+
+            if c_bastion_done >= 1 then
+                call SetBuildUpgr( 2, UPG_PURPLE_ATTACK      )
+                call SetBuildUpgr( 2, UPG_PURPLE_ARMOR    )
+
+                if c_unity_done >= 1 then
+                    call SetBuildUpgr( 3, UPG_PURPLE_ATTACK      )
+                    call SetBuildUpgr( 3, UPG_PURPLE_ARMOR    )
+                endif
+            endif
+        endif
+
+        if c_nether + c_imp + c_hound >= 3 then
+
+            call SetBuildUpgr( 1, UPG_ORANGE_ATTACK      )
+            call SetBuildUpgr( 1, UPG_ORANGE_ARMOR         )
+
+            if c_bastion_done >= 1 then
+                call SetBuildUpgr( 2, UPG_ORANGE_ATTACK      )
+                call SetBuildUpgr( 2, UPG_ORANGE_ARMOR         )
+
+                if c_unity_done >= 1 then
+                    call SetBuildUpgr( 3, UPG_ORANGE_ATTACK      )
+                    call SetBuildUpgr( 3, UPG_ORANGE_ARMOR         )
+                endif
+            endif
+        endif
+    endif
+
+    if c_eye >= 1 and c_unity_done >= 1 and c_astower_done >= 1 then
+        call SetBuildUpgr( 1, UPG_SKITTERING_RIFTS   )
+        call SetBuildUpgr( 1, UPG_ABYSS_SHOCK  )
+    endif
+
+    if c_gate_done >= 1 then
+        
+        if c_phoenix >= 3 and c_bastion_done >= 1 and c_hall_done >= 1 and c_portal_done >= 1 then
+            call SetBuildUpgr( 1, UPG_SHADOW_WREATH      )
+        endif
+
+        if c_void >= 3 then
+            if c_unity_done >= 1 then
+                call SetBuildUpgr( 1, UPG_VOIDWALKER      )
+            endif
+        endif
+        
+        if c_phoenix >= 3 and c_unity_done >= 1 and c_hall_done >= 1 and c_portal_done >= 1 then
+            call SetBuildUpgr( 1, UPG_PHOENIX_EGG      )
+        endif
+    endif
+
+    if c_prison_done >= 1 then
+
+        if c_watcher >= 1 and c_hall_done >= 1 then
+            if c_bastion_done >= 1 then
+                call SetBuildUpgr( 1, UPG_VOIDIC_VOLLEY  )
+            endif
+            if c_unity_done >= 1 then
+                call SetBuildUpgr( 1, UPG_AETHERBLAST  )
+            endif
+        endif
+
+        if c_suffer >= 1 then
+
+            call SetBuildUpgr( 1, UPG_ASPECT_SUFFER  )
+
+            if c_unity_done >= 1 then
+                call SetBuildUpgr( 2, UPG_ASPECT_SUFFER  )
+            endif
+        endif
+
+        if c_prisoner >= 1 and c_unity_done >= 1 then
+            call SetBuildUpgr( 1, UPG_PRISONER_BURST )
+        endif
+    endif
+    
+    if c_astower_done >= 1 then
+
+        if c_warden >= 1 then
+
+            call SetBuildUpgr( 1, UPG_AETHER_WARDEN  )
+
+            if c_unity_done >= 1 then
+                call SetBuildUpgr( 2, UPG_AETHER_WARDEN  )
+            endif
+        endif
+        
+        if c_unity_done >= 1 then
+            call SetBuildUpgr( 1, UPG_STORM_AURA )
+        endif
+    endif
+    
+    if c_portal_done >= 1 then
+
+        if c_drake >= 1 then
+
+            call SetBuildUpgr( 1, UPG_ABYSS_DRAKE  )
+
+            if c_unity_done >= 1 then
+                call SetBuildUpgr( 2, UPG_ABYSS_DRAKE  )
+            endif
+        endif
+    endif
+endfunction
+
+//--------------------------------------------------------------------------------------------------
+//  build_sequence
+//--------------------------------------------------------------------------------------------------
+function build_sequence takes nothing returns nothing
+    local boolean primary_melee
+    local integer rifts
+
+    call InitBuildArray()
+
+    if basic_opening then
+        call SetBuildUnit(  1, SHRINE        )
+        call SetBuildUnit(  1, VOID_ALTAR        )
+        call SetBuildUnit(  1, AETHERGATE        )
+        call SetBuildUnit(  4, RIFT             )
+        call SetBuildUnit(  1, hero_id          )
+        call SetBuildUnit(  1, VORTEX_OF_SACRIFICE        )
+        call basics(2)// (  1, ARCHER           )
+        call SetBuildUnit(  1, VAULT_OF_THE_AETHER   )
+        call basics(4)// (  2, ARCHER           )
+        call basics(6)// (  3, ARCHER           )  
+        call SetBuildUnit(  1, EXPANSION_FORERUNNER        )
+        call SetBuildUnit(  1, VOID_HALL     )
+        //call SetBuildUnit(  2, VORTEX_OF_SACRIFICE        )
+        //call SetBuildUnit(  2, EXPANSION_FORERUNNER        )
+        call basics(8)// (  4, ARCHER           )
+        call basics(10)//(  5, ARCHER           )
+        call basics(15)//(  6, ARCHER           )
+                       //(  1, HUNTRESS         )
+        call SetBuildUnit(  1, BASTION_OF_LAMENT        )
+
+        call BasicExpansion( c_mines < 2, SHRINE )
+
+        call SetBuildUpgr(  1, UPG_PURPLE_ATTACK     )
+        call SetBuildUpgr(  1, UPG_PURPLE_ARMOR   )
+        //call SetBuildUnit(  3, VORTEX_OF_SACRIFICE  )
+
+        if MeleeDifficulty() != MELEE_NEWBIE then
+            call SetBuildUnit(  1, hero_id2     )
+        endif
+
+        return
+    endif
+
+    if c_shrine < 1 and c_void_done > 0 then
+        call MeleeTownHall( 0, SHRINE )
+        call MeleeTownHall( 1, SHRINE )
+        call MeleeTownHall( 2, SHRINE )
+    endif
+
+    if c_shrine_done > 0 then 
+        set rifts = 6 - GetWood() / 200
+        if rifts < 3 then
+            set rifts = 3
+        endif
+        if c_mines < 2 or c_shrine_done < 2 then
+            set rifts = rifts + 4
+        else
+            set rifts = rifts + 7
+        endif
+        if rifts > 11 then
+            set rifts = 11
+        endif
+        call SetBuildNext( rifts, RIFT )
+    endif
+
+    if c_gold > 500 and GetWood() < 100 then
+        call SetBuildNext( 8, RIFT )
+    endif
+
+    // having enough gold is the highest priority
+    //
+    if c_gold_owned < 2000 then
+        call BasicExpansion( c_mines < 2, SHRINE )
+        if MeleeDifficulty() != MELEE_NEWBIE then
+            call GuardSecondary( 1, 1, SHADOW_BUNKER )
+            call GuardSecondary( 1, 2, SHADOW_BUNKER )
+        endif
+    endif
+
+    // get enough moon wells to cover food need
+    //
+    if c_food_used + 5 > c_food_made and c_vortex_done < 3 then
+        call SetBuildUnit( c_vortex_done + 1, VORTEX_OF_SACRIFICE )
+        call SetBuildUnit( c_vortex_done + 1, EXPANSION_FORERUNNER )
+    endif
+
+    // recover heroes for basic defense
+    //
+    if c_altar_done >= 1 then
+
+        if b_hero1_done and MeleeDifficulty() != MELEE_NEWBIE then
+            call SetBuildUnit( 1, hero_id2 )
+        else
+            call SetBuildUnit( 1, hero_id  )
+        endif
+    else
+        call SetBuildUnit( 1, VOID_ALTAR )
+    endif
+
+    // the primary melee force is the prisonhound
+    //
+    set primary_melee = c_prison_done >= 1 and c_unity_done >= 1
+    if primary_melee then
+        call SetBuildNext( 2, NETHERCHILD2 )
+        call SetBuildNext( 2, PRISONHOUND )
+
+    // the backup melee force is the impling/netherwalker group
+    //
+    else
+        call SetBuildUnit( 1, AETHERGATE   )
+        if c_bastion_done >= 1 then
+            call SetBuildNext( 2, IMPLING      )
+            call SetBuildNext( 1, NETHERWALKER      )
+        endif
+    endif
+
+    // the primary ranged force is the prisonwatcher
+    //
+    if c_prison_done >= 1 and c_hall_done >= 1 then
+        call SetBuildUnit( 2, PRISONWATCHER )
+
+    // the backup ranged force is the voidwalker
+    //
+    else
+        call SetBuildUnit( 1, AETHERGATE   )
+        call SetBuildUnit( 3, VOIDWALKER        )
+    endif
+
+    // need siege to take out enemy towns and expansions
+    //
+    call SetBuildUnit( 1, PRISONS )
+    call SetBuildUnit( 3, PRISONWATCHER )
+    //if b_acid_breath and c_roost_done >= 1 then
+    //    call SetBuildUnit( 2, CHIMAERA )
+    //elseif c_mtn_giant < 1 then
+    //    call SetBuildUnit( 2, BALLISTA )
+    //endif
+
+    // if we have enough gold then advance on the tech tree
+    //
+    if c_gold > 1000 then
+
+        if MeleeDifficulty() != MELEE_NEWBIE then
+            call GuardSecondary( 1, 1, SHADOW_BUNKER )
+            call GuardSecondary( 1, 1, SHROOM_TOWER )
+        endif
+
+        call SetBuildUnit(  1, AETHERGATE      )
+        call SetBuildUnit(  1, VOID_HALL     )
+        call SetBuildUnit(  1, BASTION_OF_LAMENT        )
+        call SetBuildUnit(  1, VAULT_OF_THE_AETHER   )
+        call SetBuildUnit(  1, PRISONS     )
+        call SetBuildUpgr(  1, UPG_UNITY    )
+        call SetBuildUnit(  1, AETHERSTORM_TOWER     )
+        call SetBuildUnit(  1, TRANSLO_PORTAL   )
+
+        call do_upgrades()
+
+        if c_gold > 2000 then
+        //    call BuildFactory( ANCIENT_LORE     )
+        //    call BuildFactory( ANCIENT_WAR      )
+        //    call BuildFactory( CHIMAERA_ROOST   )
+        //    call BuildFactory( ANCIENT_WIND     )
+        endif
+
+    elseif c_food_used >= X_UPKEEP_TIER1 then
+        call do_upgrades()
+    endif
+
+    call BasicExpansion( c_mines < 2, SHRINE )
+    if MeleeDifficulty() != MELEE_NEWBIE then
+        call GuardSecondary( 1, 1, SHADOW_BUNKER )
+        call GuardSecondary( 1, 1, SHROOM_TOWER )
+    endif
+
+    if c_food_used >= X_UPKEEP_TIER2 - 10 and c_gold < 2000 then
+        return
+    endif
+
+    // build units from whatever buildings we already have
+    //
+    if primary_melee then
+        call SetBuildNext( 4, NETHERCHILD2 )
+        call SetBuildNext( 4, PRISONHOUND )
+    else
+        call SetBuildNext( 7, IMPLING )
+    endif
+
+    if c_prison_done >= 1 then
+        call SetBuildNext( 4, PRISONWATCHER )
+        call SetBuildNext( 2, VOIDWALKER )
+    else
+        call SetBuildNext( 6, VOIDWALKER )
+    endif
+
+    if c_bastion_done >= 1 then
+        if c_unity_done >= 1 and c_altar_done >= 1 and MeleeDifficulty() != MELEE_NEWBIE then
+            call SetBuildUnit( 1, hero_id3 )
+        endif
+
+        if c_prison_done >= 1 then
+            call SetBuildUnit( 1, ASPECT_OF_SUFFERING )
+        endif
+    endif
+
+    if c_astower_done >= 1 then
+        call SetBuildUnit( 2, NETHERCHILD2 )
+        call SetBuildUnit( 1, EYE_OF_THE_AETHER )
+
+        call SetBuildUnit( 1, AETHERSTORM_WARDEN )
+    endif
+    
+    if c_portal_done >= 1 then
+        call SetBuildUnit( 6, NETHERCHILD2 )
+        call SetBuildUnit( 5, ABYSS_WARP_DRAKE )
+        call SetBuildUnit( 6, SHADOW_PHOENIX )
+    endif
+
+    if c_gold_owned < 10000 then
+        call BasicExpansion( c_mines < 3, SHRINE )
+        if MeleeDifficulty() != MELEE_NEWBIE then
+            call GuardSecondary( 2, 1, SHROOM_TOWER )
+            call GuardSecondary( 2, 1, SHADOW_BUNKER )
+        endif
+    endif
+
+    if c_food_used >= 60 and c_zeps < 3 then
+        call GetZeppelin()
+    endif
+endfunction
+
+
+function UseLumberLasers takes nothing returns nothing
+local group rifts = CreateGroup()
+local unit enumUnit
+local unit forerunner
+local location loc
+    
+    call GroupEnumUnitsOfPlayer(rifts,ai_player,null)//AIUnitsFilter())
+    set rifts = SelectByIdOr(rifts,'n02W','h012',true)
+    //call ForGroupAI(rifts,"LumberLaserHarvestEnum")
+    loop
+        set enumUnit = FirstOfGroup(rifts)
+        exitwhen enumUnit == null    
+        call IssueImmediateOrder(enumUnit,"immolation")
+        call GroupRemoveUnit(rifts,enumUnit)
+    endloop
+    
+    //Run another check for upgraded town halls, just in case
+    call GroupEnumUnitsOfPlayer(rifts,ai_player,null)//AIUnitsFilter())
+    set rifts = SelectByIdOr(rifts,'n02F','h02J',true)
+    //call ForGroupAI(rifts,"LumberLaserHarvestEnum")
+    loop
+        set enumUnit = FirstOfGroup(rifts)
+        exitwhen enumUnit == null    
+        call IssueImmediateOrder(enumUnit,"immolation")
+        call GroupRemoveUnit(rifts,enumUnit)
+    endloop
+    
+    //Run another check for children of the nether to make them all non-pathblockers
+    call GroupEnumUnitsOfPlayer(rifts,ai_player,null)//AIUnitsFilter())
+    set rifts = SelectById(rifts,NETHERCHILD,true)
+    //call ForGroupAI(rifts,"LumberLaserHarvestEnum")
+    loop
+        set enumUnit = FirstOfGroup(rifts)
+        exitwhen enumUnit == null    
+        call UnitAddAbility(enumUnit,'Aeth')
+        call GroupRemoveUnit(rifts,enumUnit)
+    endloop
+    
+    if not basic_opening then
+        //Check for vortex, make it feast upon forerunners
+        call GroupEnumUnitsOfPlayer(rifts,ai_player,null)//AIUnitsFilter())
+        set rifts = SelectById(rifts,VORTEX_OF_SACRIFICE,true)
+        //call ForGroupAI(rifts,"LumberLaserHarvestEnum")
+        loop
+            set enumUnit = FirstOfGroup(rifts)
+            exitwhen enumUnit == null
+            
+            set loc = GetUnitLoc(enumUnit)
+            set forerunner = GetOneOfIdNearLoc(ai_player,EXPANSION_FORERUNNER,loc,2900)
+            if forerunner != null then
+                call IssuePointOrderLoc(forerunner,"move",loc)
+                call IssueTargetOrder(enumUnit,"steal",forerunner)
+            endif    
+            call UnitAddAbility(enumUnit,'Aeth')
+        
+        
+            call GroupRemoveUnit(rifts,enumUnit)
+        endloop
+    endif
+    
+    call DestroyGroup(rifts)
+    set rifts = null
+endfunction
+
+//--------------------------------------------------------------------------------------------------
+//  peon_assignment
+//--------------------------------------------------------------------------------------------------
+function peon_assignment takes nothing returns nothing
+    local integer T
+    loop
+        call ClearHarvestAI()
+
+        set T = TownWithMine()
+
+        call UseLumberLasers()
+        //call HarvestGold(T,4)
+        call HarvestWood(0,1)
+        //call HarvestGold(T,1)
+        call HarvestWood(0,2)
+
+        if c_mines_done > 1 then
+        //    call HarvestGold(T+1,5)
+        endif
+        //Focus on wood mining if any workers are accidentally accumulated
+
+        call HarvestWood(0,20)
+
+        call build_sequence()
+        call Sleep(GetRandomInt(1,3))
+    endloop
+endfunction
+
+//============================================================================
+//  PickMeleeHero 
+//============================================================================
+function PickModHero takes nothing returns integer
+    local integer first
+    local integer second
+    local integer third
+    local integer last
+    local integer array heroes
+
+        set heroes[1] = VOIDGOD
+        set heroes[2] = FLAMEWEAVER
+        set heroes[3] = OVERLORD
+        set heroes[4] = MAW
+
+        set last = 3//don't use maw, as the AI totally derps around with it
+
+    set first  = GetRandomInt(1,last)
+    set second = GetRandomInt(1,last-1)
+    set third  = GetRandomInt(1,last-2)
+
+    set hero_id        = heroes[first]
+    set heroes[first]  = heroes[last]
+    set hero_id2       = heroes[second]
+    set heroes[second] = heroes[last-1]
+    set hero_id3       = heroes[third]
+
+    return hero_id
+endfunction
+
+ 
+//***************************************************************************
+//*
+//*  "Custom Void Code"
+//*  A place to do all the stupid and terrible things that I shouldn't have to do...
+//*
+//***************************************************************************
+
+function CustomVoidCode takes unit specialHomeShrine returns nothing
+    call UnitAddAbility(CreateUnit(ai_player,'e007',GetUnitX(specialHomeShrine),GetUnitY(specialHomeShrine),270.00),'Aloc')
+    call UnitAddAbility(CreateUnit(ai_player,'e007',GetUnitX(specialHomeShrine),GetUnitY(specialHomeShrine),270.00),'Aloc')
+    call UnitAddAbility(CreateUnit(ai_player,'e007',GetUnitX(specialHomeShrine),GetUnitY(specialHomeShrine),270.00),'Aloc')
+    call UnitAddAbility(CreateUnit(ai_player,'e007',GetUnitX(specialHomeShrine),GetUnitY(specialHomeShrine),270.00),'Aloc')
+    call UnitAddAbility(CreateUnit(ai_player,'e007',GetUnitX(specialHomeShrine),GetUnitY(specialHomeShrine),270.00),'Aloc')
+    call UnitAddAbility(CreateUnit(ai_player,'e007',GetUnitX(specialHomeShrine),GetUnitY(specialHomeShrine),270.00),'Aloc')
+    call SaveBoolean(voidUnitHash,VOIDWALKER,0,true)
+    call SaveBoolean(voidUnitHash,EXPANSION_FORERUNNER,0,true)
+    call SaveBoolean(voidUnitHash,IMPLING,0,true)
+    call SaveBoolean(voidUnitHash,NETHERWALKER,0,true)
+    call SaveBoolean(voidUnitHash,ASPECT_OF_SUFFERING,0,true)
+    call SaveBoolean(voidUnitHash,PRISONWATCHER,0,true)
+    call SaveBoolean(voidUnitHash,NETHERLING,0,true)
+    call SaveBoolean(voidUnitHash,PRISONHOUND,0,true)
+    call SaveBoolean(voidUnitHash,AETHERSTORM_WARDEN,0,true)
+    call SaveBoolean(voidUnitHash,EYE_OF_THE_AETHER,0,true)
+    call SaveBoolean(voidUnitHash,SHADOW_PHOENIX,0,true)
+    call SaveBoolean(voidUnitHash,ABYSS_WARP_DRAKE,0,true)
+    //All of the units are hashed into the system, so that the "SetBuildAll" thread's
+    // list of how to make units will inject in custom upgrade code when it's time to upgrade
+    // a child of the nether into one of these guys 
+endfunction
+
+//--------------------------------------------------------------------------------------------------
+//	main
+//--------------------------------------------------------------------------------------------------
+function main takes nothing returns nothing
+local unit specialHomeShrine
+    call PickModHero()
+    call set_skills()
+    call StandardAI(function SkillArrays, function peon_assignment, function attack_sequence)
+    call StartThread(function set_vars)
+     
+    call Sleep( 0.1 )
+    set specialHomeShrine = GetBuilding(ai_player)
+    call IssueImmediateOrder(specialHomeShrine,"immolation")
+    call CustomVoidCode(specialHomeShrine)
+    
+    call StartThread(function BuildLoopVoid)
+    call SleepForever()
+endfunction
